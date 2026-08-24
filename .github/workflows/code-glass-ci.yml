@@ -13,29 +13,52 @@ permissions:
   contents: read
 
 jobs:
-  verify:
-    name: Tests and repository hygiene
+  verify-and-package:
+    name: Verify and package Code Glass
     runs-on: ubuntu-latest
     timeout-minutes: 15
+
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
+
       - name: Install dependencies
         run: npm ci
+
       - name: Run complete test suite
         run: npm test
-      - name: Check whitespace
+
+      - name: Check repository whitespace
         run: git diff --check
-      - name: Check unsafe tracked files
+
+      - name: Check tracked files for secrets and dependencies
         shell: bash
         run: |
           if git ls-files | grep -E '(^|/)(\.env|\.env\..*)$|\.(pem|key|p12|pfx)$|(^|/)node_modules/'; then
-            echo "Unsafe tracked file detected."
+            echo 'Unsafe tracked file detected.'
             exit 1
           fi
-          echo "Tracked-file audit passed."
+          echo 'Tracked-file audit passed.'
+
+      - name: Create reproducible source bundle
+        shell: bash
+        run: |
+          mkdir -p dist
+          short_sha="${GITHUB_SHA:0:7}"
+          printf 'Code Glass source bundle\nCommit: %s\nRef: %s\n' "$GITHUB_SHA" "$GITHUB_REF_NAME" > dist/BUILD-METADATA.txt
+          git archive --format=zip --output="dist/code-glass-source-${short_sha}.zip" HEAD
+          cp README.md "dist/README-${short_sha}.md"
+
+      - name: Upload downloadable source artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-glass-source-${{ github.sha }}
+          path: dist/
+          if-no-files-found: error
+          retention-days: 30
