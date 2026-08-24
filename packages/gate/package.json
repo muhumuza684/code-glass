@@ -1,0 +1,7 @@
+{
+  "name": "code-glass-gate",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "type": "commonjs",
+  "dependencies": { "code-glass-core": "1.0.0" }
+}

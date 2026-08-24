@@ -1,0 +1,8 @@
+{
+  "name": "codeglass",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "type": "commonjs",
+  "bin": { "codeglass": "src/index.js" },
+  "dependencies": { "code-glass-core": "1.0.0", "code-glass-gate": "1.0.0", "code-glass-write-path": "1.0.0", "commander": "^12.1.0" }
+}

@@ -1,0 +1,12 @@
+{
+  "name": "code-glass",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": ["packages/*", "electron"],
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "start": "npm --workspace electron start"
+  },
+  "devDependencies": { "vitest": "^2.1.8" }
+}

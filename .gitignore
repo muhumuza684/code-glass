@@ -1,0 +1,17 @@
+node_modules/
+dist/
+build/
+out/
+.cache/
+coverage/
+verification-reports/
+*-backup-*/
+*.zip
+*.log
+.env
+.env.*
+!.env.example
+*.tmp
+*.temp
+
+*.backup-*
