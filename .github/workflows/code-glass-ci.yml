@@ -1,0 +1,41 @@
+name: Code Glass CI
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - '**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Tests and repository hygiene
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Run complete test suite
+        run: npm test
+      - name: Check whitespace
+        run: git diff --check
+      - name: Check unsafe tracked files
+        shell: bash
+        run: |
+          if git ls-files | grep -E '(^|/)(\.env|\.env\..*)$|\.(pem|key|p12|pfx)$|(^|/)node_modules/'; then
+            echo "Unsafe tracked file detected."
+            exit 1
+          fi
+          echo "Tracked-file audit passed."

@@ -1,4 +1,4 @@
-﻿const PROCESS_IDS = ['discover', 'build-prove', 'ship-learn'];
+const PROCESS_IDS = ['discover', 'build-prove', 'ship-learn'];
 const PROCESS_NAMES = { discover: 'Discover', 'build-prove': 'Build & Prove', 'ship-learn': 'Ship & Learn' };
 function normalizeProject(manifest) {
   const legacy = Array.isArray(manifest.stages) ? manifest.stages : [];

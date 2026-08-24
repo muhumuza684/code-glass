@@ -1,37 +1,67 @@
-# Code Glass
+# Lame in Tech - Code Glass
 
-Code Glass is a desktop tracker for solo and AI-assisted software projects. Each tracked project has one `project.codeglass.json` manifest as its source of truth. This repository contains the six requested pieces: `code-glass-core`, `code-glass-gate`, `code-glass-write-path`, the `codeglass` CLI, the stdio MCP server, and the Electron renderer.
+Code Glass is an accessibility-first software observatory for Lame in Tech, a voice-to-idea system designed to help people, including people with disabilities, turn spoken ideas into software while monitoring progress remotely.
 
-## Run and test
+## What it provides
 
-From the repository root, install dependencies with `npm install`, then run the unit suite with `npm test`. Launch the desktop app with `npm start`. The CLI can be invoked after linking its workspace package with `npm --workspace packages/cli link` or directly with `node packages/cli/src/index.js`.
+| Capability | Description |
+|---|---|
+| Voice-first intake | Captures spoken ideas for the build workflow. |
+| Three-process observatory | Keeps Discover, Build & Prove, and Ship & Learn visible. |
+| Guided Mode | Presents one clear GO, WAIT, STOP, READY, or LISTENING signal. |
+| Observatory Mode | Shows process state, evidence, failures, and next actions. |
+| Adaptive audio | Uses motorbike-style sound cues for progress, warnings, success, and failure. |
+| Remote build-away | Supports monitoring away from the computer through notification and reply adapters. |
+| Structured state | Preserves project state, transitions, migrations, and evidence. |
 
-The CLI commands are:
+## Accessible guidance
+
+Traffic-light guidance is never color-only. Each state combines color, shape, icon, plain-language text, and optional audio or haptic metadata.
+
+| Signal | Meaning |
+|---|---|
+| Green circle | GO - continue safely. |
+| Amber triangle | WAIT - input or confirmation is needed. |
+| Red octagon | STOP - a blocking action requires attention. |
+| Gray circle | READY - start an idea or select a project. |
+| Blue microphone | LISTENING - speak now. |
+
+## Three-process model
+
+1. **Discover** - capture and clarify the idea.
+2. **Build & Prove** - implement, test, and show evidence.
+3. **Ship & Learn** - export, notify, learn, and improve.
+
+## Local development
+
+Requirements: Node.js 22 or newer and npm.
+
+```powershell
+npm ci
+npm test
+npm --workspace electron start
+```
+
+## Continuous integration
+
+Every push and pull request runs npm test, Git whitespace validation, and a tracked-file safety audit through GitHub Actions.
+
+## Project structure
 
 ```text
-codeglass status <project>
-codeglass validate <project>
-codeglass record <project> <stageId> <status> <summary> [--gate-result <id>]
-codeglass confirm <project>
-codeglass snapshot <project> [trigger]
-codeglass restore <project> <snapshotId>
+electron/                 Electron desktop application
+packages/core/            State, workflow, guidance, and reliability logic
+packages/gate/            Process gates and transition checks
+packages/write-path/      Safe project write operations
+.github/workflows/        Continuous integration
 ```
 
-The MCP server exposes exactly `get_status`, `validate_change`, and `record_progress`. A client configuration can point at it as follows:
+## Privacy and safety
 
-```json
-{
-  "mcpServers": {
-    "code-glass": {
-      "command": "node",
-      "args": ["/absolute/path/to/code-glass/packages/mcp-server/src/index.js"]
-    }
-  }
-}
-```
+Credentials, private keys, environment files, dependency folders, and private recordings must not be committed. Remote replies must remain authenticated, bounded, deduplicated, and auditable. Audio, spoken announcements, reduced motion, and haptic feedback should remain user-controllable.
 
-## Design notes
+## Status
 
-The core package uses Zod for strict schema validation and derives completion from completed stages. The gate package records append-only results. The write-path package is immutable for proposal, confirmation, and rejection operations and requires an explicit `confirmed: true` flag before restoration. The Electron UI intentionally contains local confirmation stubs as required by the brief; those stubs are marked by the surrounding architecture and are the replacement point for the shared write-path package in a packaged build. The Electron main process also leaves MCP child-process spawning as an explicit TODO, as requested.
+The repository contains the verified Code Glass implementation through Phase 16, including accessible guidance signals and Guided/Observatory modes.
 
-The specification explicitly excludes deletion, drag-and-drop stage reordering, output-format flags, retry/caching systems, and convenience MCP history tools; none are included here.
+<!-- CODEGLASS_PHASE11_HARDENING -->

@@ -42,3 +42,89 @@ async function saveAppConfig(filePath, config) { appConfigSchema.parse(config); 
 function getCurrentStage(manifest) { return manifest.stages[manifest.current_stage_index] || null; }
 const integration = require('./integration');
 module.exports = { ...integration, manifestSchema, appConfigSchema, createManifest, loadManifest, saveManifest, validateManifest, computeOverallCompletion, getCurrentStage, loadAppConfig, saveAppConfig };
+
+/* CODEGLASS_PHASE03_CANONICAL_MIGRATION */
+const phase03Migration = require('./state-migration');
+module.exports.migrateLegacyStages = phase03Migration.migrateLegacyStages;
+module.exports.migrateManifest = phase03Migration.migrateManifest;
+module.exports.loadCanonicalManifest = (filePath) => phase03Migration.loadCanonicalManifest(filePath, module.exports.validateManifest);
+module.exports.saveCanonicalManifest = (filePath, manifest) => phase03Migration.saveCanonicalManifest(filePath, manifest, module.exports.validateManifest);
+module.exports.loadManifest = async (filePath) => {
+  const raw = JSON.parse(await require('node:fs/promises').readFile(filePath, 'utf8'));
+  const migrated = phase03Migration.migrateManifest(raw);
+  module.exports.validateManifest(migrated);
+  return migrated;
+};
+
+/* CODEGLASS_PHASE04_PROCESS_WORKFLOW */
+const phase04Workflow = require('./process-workflow');
+module.exports.validateProcessState = phase04Workflow.validateProcessState;
+module.exports.recordGateResult = phase04Workflow.recordGateResult;
+module.exports.proposeChange = phase04Workflow.proposeChange;
+module.exports.confirmChange = phase04Workflow.confirmChange;
+module.exports.rejectChange = phase04Workflow.rejectChange;
+module.exports.createSnapshot = phase04Workflow.createSnapshot;
+module.exports.restoreSnapshot = phase04Workflow.restoreSnapshot;
+
+/* CODEGLASS_PHASE05_FAILURE_IMPACT */
+const phase05Impact = require('./failure-impact');
+module.exports.recordFailure = phase05Impact.recordFailure;
+module.exports.resolveFailure = phase05Impact.resolveFailure;
+module.exports.deriveProjectImpact = phase05Impact.deriveProjectImpact;
+module.exports.activityHistory = phase05Impact.activityHistory;
+module.exports.processImpact = phase05Impact.processImpact;
+
+/* CODEGLASS_PHASE09_NOTIFICATIONS */
+const phase09Notifications = require('./notifications');
+module.exports.normalizeEmail = phase09Notifications.normalizeEmail;
+module.exports.normalizePhone = phase09Notifications.normalizePhone;
+module.exports.normalizeRecipients = phase09Notifications.normalizeRecipients;
+module.exports.runtimeProviderConfig = phase09Notifications.runtimeProviderConfig;
+module.exports.publicProviderConfig = phase09Notifications.publicProviderConfig;
+module.exports.notificationText = phase09Notifications.notificationText;
+module.exports.buildNotification = phase09Notifications.buildNotification;
+module.exports.deliverNotification = phase09Notifications.deliverNotification;
+module.exports.appendNotificationRecord = phase09Notifications.appendNotificationRecord;
+module.exports.failureEvent = phase09Notifications.failureEvent;
+module.exports.progressEvent = phase09Notifications.progressEvent;
+
+/* CODEGLASS_PHASE10_REMOTE_REPLIES */
+const phase10Remote = require('./remote-replies');
+module.exports.signReply = phase10Remote.signReply;
+module.exports.verifyReply = phase10Remote.verifyReply;
+module.exports.parseCommand = phase10Remote.parseCommand;
+module.exports.acceptReply = phase10Remote.acceptReply;
+module.exports.executeSafeReply = phase10Remote.executeSafeReply;
+module.exports.releaseReadiness = phase10Remote.releaseReadiness;
+module.exports.finalAcceptance = phase10Remote.finalAcceptance;
+
+/* CODEGLASS_PHASE11_QUALITY_HARDENING */
+const phase11Quality = require('./quality-hardening');
+module.exports.escapeHtml = phase11Quality.escapeHtml;
+module.exports.redactText = phase11Quality.redactText;
+module.exports.redact = phase11Quality.redact;
+module.exports.validateManifestShape = phase11Quality.validateManifestShape;
+module.exports.validateJsonExport = phase11Quality.validateJsonExport;
+module.exports.validateHtmlExport = phase11Quality.validateHtmlExport;
+module.exports.auditRenderer = phase11Quality.auditRenderer;
+module.exports.auditSecretSafety = phase11Quality.auditSecretSafety;
+
+/* CODEGLASS_PHASE14_ARCHITECTURE_HARDENING */
+const phase14Architecture = require('./architecture-hardening');
+module.exports.eventId = phase14Architecture.eventId;
+module.exports.atomicWriteJson = phase14Architecture.atomicWriteJson;
+module.exports.withRetry = phase14Architecture.withRetry;
+module.exports.validateTransition = phase14Architecture.validateTransition;
+module.exports.idempotencyKey = phase14Architecture.idempotencyKey;
+module.exports.acceptOnce = phase14Architecture.acceptOnce;
+module.exports.buildAuditSummary = phase14Architecture.buildAuditSummary;
+
+/* CODEGLASS_PHASE15_GUIDANCE_SIGNALS */
+const phase15Guidance = require('./guidance-signals');
+module.exports.SIGNALS = phase15Guidance.SIGNALS;
+module.exports.resolveGuidanceSignal = phase15Guidance.resolveGuidanceSignal;
+module.exports.getGuidanceAnnouncement = phase15Guidance.getGuidanceAnnouncement;
+module.exports.getGuidanceAudioCue = phase15Guidance.getGuidanceAudioCue;
+module.exports.getGuidanceHapticCue = phase15Guidance.getGuidanceHapticCue;
+module.exports.normalizeGuidanceMode = phase15Guidance.normalizeGuidanceMode;
+module.exports.setGuidanceMode = phase15Guidance.setGuidanceMode;

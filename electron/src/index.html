@@ -4,7 +4,91 @@
 :root{--black:#000;--yellow:#fff120;--blue:#2040a0;--neutral:#0040a0;--background:#2060a0;--surface:#606060;--white:#f7fbff;--error:#d7193f;--success:#38d39f}
 *{box-sizing:border-box}html,body{max-width:100%;overflow-x:hidden}body{background:radial-gradient(circle at 12% 0,#2060a0 0,#06101d 46%,#000 100%);color:var(--white)}header{background:rgba(0,0,0,.94);border-bottom:2px solid var(--yellow);min-height:72px;height:auto;padding:14px clamp(14px,3vw,34px);gap:14px;flex-wrap:wrap}header h1{color:var(--white);white-space:nowrap}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-left:auto}button{min-height:42px;border-radius:8px;border:1px solid var(--yellow);background:var(--yellow);color:#000;font-weight:800}button.secondary{background:var(--blue);border-color:#91adff;color:#fff}.layout{width:100%;max-width:1800px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,360px);gap:22px}.glass-card,.project,.card,.panel{border-color:#75b8e866;background:linear-gradient(135deg,#ffffff12,#2060a01b 38%,#00000070),rgba(0,32,75,.58);backdrop-filter:blur(22px);box-shadow:inset 10px 0 24px #fff1,inset -12px 0 26px #0009,0 22px 55px #0009}.glass-card.failed,.project.failed,.card.failed,.glass-card:has(.error),.project:has(.error),.card:has(.error){border-color:var(--error);box-shadow:inset 0 0 120px #d7193f3b,0 0 32px #d7193f55}.log-panel,.log{border-color:#75b8e866;background:rgba(0,22,55,.76);backdrop-filter:blur(20px)}.cg-export-bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:0 0 18px}.cg-export-bar button{background:var(--yellow);color:#000}.cg-failure-banner{display:flex;gap:10px;align-items:center;padding:14px 16px;margin:0 0 14px;background:#d7193f22;border:2px solid var(--error);border-radius:10px;font-weight:800}.cg-failure-banner b{color:#ff8ca0}.cg-finished{border-color:var(--success)!important;box-shadow:0 0 30px #38d39f33,inset 0 0 70px #38d39f18!important}@media(max-width:1150px){.layout{grid-template-columns:1fr}.log-panel,.log{position:static!important;height:380px;max-width:none}}@media(max-width:760px){header{align-items:stretch}header h1{font-size:20px}.tabs{width:100%;margin-left:0}.tabs button{flex:1}.layout{display:block}.glass-card,.project,.card{padding:14px;border-radius:16px}.processes,.grid{grid-template-columns:1fr!important}.detail-grid,.bottom{grid-template-columns:1fr!important}.pipeline-wrap{overflow-x:hidden}.pipeline{min-width:0!important;grid-template-columns:1fr!important;gap:8px}.stage-card{height:auto;min-height:110px}.stage-mark{display:none}.log-panel,.log{height:340px!important;min-height:0}}
 </style>
-</head><body><header><h1> Code Glass</h1><div class="tabs"><button class="secondary" onclick="show('dashboard')">Dashboard</button><button class="secondary" onclick="show('settings')">Settings</button><button onclick="startNew()">+ New project</button></div></header><main class="shell"><div class="layout"><div><section id="dashboard"><div class="toolbar"><div><h2>Build Away From Your Machine</h2><div class="muted">Three transparent processes reveal what the code is doing.</div></div><div class="legend"><span><i class="sw" style="background:var(--ok)"></i>Passed</span><span><i class="sw" style="background:var(--gold)"></i>Active</span><span><i class="sw" style="background:var(--bad)"></i>Failed</span><button class="secondary" id="soundBtn" onclick="toggleSound()">Sound off</button></div></div><div id="projects" class="projects"></div></section><section id="settings" class="hidden"><div class="sub form"><h2>Remote build settings</h2><p class="muted">Credentials are never placed in the renderer. This panel stores preferences only; delivery requires a secure server adapter.</p><div class="remote"><label>Notification email<input id="notifyEmail" placeholder="you@example.com"></label><label>WhatsApp number<input id="notifyWhatsApp" placeholder="+256700000000"></label><label><input type="checkbox" id="notifyProgress"> Send progress updates</label><label><input type="checkbox" id="notifyErrors" checked> Send failure alerts</label><label>Reply safety mode<select id="replyMode"><option value="safe">Safe commands only</option><option value="review">Require review for every action</option></select></label><div class="actions"><button onclick="saveRemotePrefs()">Save preferences</button><button class="secondary" onclick="testSound()">Test engine</button></div><p id="remoteNote" class="muted"></p></div></div></section><section id="onboarding" class="hidden"><div class="sub form"><h2>New three-process project</h2><label>Display name<input id="display" placeholder="My project"></label><p class="muted">New projects are created with Discover, Build &amp; Prove, and Ship &amp; Learn.</p><div class="actions"><button onclick="createProject()">Create project</button></div></div></section></div><aside><div class="log"><div class="log-head"><div><h2>Activity log</h2><div class="muted">Remote-ready evidence stream</div></div><button class="secondary" onclick="clearLog()">Clear</button></div><div class="filters" style="margin:10px 0"><select id="filter" onchange="renderLog()"><option value="all">All events</option><option value="error">Errors</option><option value="warning">Warnings</option><option value="pass">Success</option><option value="info">Motion</option></select></div><div id="events" class="events"></div></div></aside></div></main>
+<style id="CODEGLASS_PHASE06_LAYERED_GLASS">
+/* Phase 6: layered optical glass, responsive layout, focus and reduced motion. */
+:root{
+  --cg-black:#000;--cg-yellow:#fff120;--cg-blue:#2040a0;--cg-white:#f7fbff;
+  --cg-error:#d7193f;--cg-success:#38d39f;--cg-glass:#ffffff12;--cg-edge:#75b8e8aa;
+}
+html,body{width:100%;max-width:100%;overflow-x:hidden}
+body{min-width:0}
+button,input,select{min-height:42px}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--cg-yellow);outline-offset:3px}
+.project,.glass-card,.card,.panel{
+  isolation:isolate;position:relative;overflow:hidden;border:1px solid var(--cg-edge);
+  background:linear-gradient(125deg,#ffffff18 0%,transparent 16%,#7ed7ff0d 37%,#00000066 100%),rgba(0,32,75,.58);
+  backdrop-filter:blur(24px) saturate(135%);-webkit-backdrop-filter:blur(24px) saturate(135%);
+  box-shadow:inset 10px 0 26px #ffffff12,inset -14px 0 32px #000b,0 24px 60px #000b;
+}
+.project:before{content:"";position:absolute;z-index:-1;inset:0;pointer-events:none;background:
+  linear-gradient(105deg,#fff5 0 5%,transparent 13% 31%,#fff2 35%,transparent 42%),
+  radial-gradient(ellipse at 18% 12%,#bceaff22,transparent 45%)}
+.project:after{content:"";position:absolute;z-index:-1;inset:7px;border:1px solid #bceaff22;border-radius:inherit;pointer-events:none;box-shadow:inset 0 0 34px #bceaff0d}
+.project.failed{border:3px solid var(--cg-error)!important;background:linear-gradient(135deg,#d7193f44,#160711bb 55%,#0009)!important;box-shadow:0 0 0 2px #ff8ca066,0 0 42px #d7193f88,inset 0 0 150px #d7193f38!important}
+.project.warning{border-color:var(--cg-yellow)!important;box-shadow:0 0 30px #fff12044,inset 0 0 100px #fff12014!important}
+.cg-glass-layers{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin:14px 0 0;position:relative;z-index:2}
+.cg-glass-layer{height:9px;border-radius:999px;border:1px solid #bceaff66;background:linear-gradient(90deg,#ffffff22,#75b8e855,#ffffff12);box-shadow:0 0 12px #75b8e844}
+.cg-glass-layer.rear{opacity:.35}.cg-glass-layer.liquid{background:linear-gradient(90deg,#2040a0,#38d39f,#fff120)}.cg-glass-layer.front{opacity:.75}.cg-glass-layer.edge{background:var(--cg-yellow);box-shadow:0 0 16px var(--cg-yellow)}.cg-glass-layer.fracture{background:var(--cg-error);box-shadow:0 0 16px var(--cg-error)}
+.cg-impact{position:relative;z-index:3;display:flex;gap:10px;align-items:flex-start;margin:14px 0;padding:14px 16px;border:2px solid var(--cg-error);border-radius:12px;background:#d7193f2e;color:var(--cg-white);font-weight:800}
+.cg-impact small{display:block;color:#ffb5c1;font-weight:500;margin-top:4px}
+.project:not(.failed) .cg-impact{display:none}
+@media(max-width:1150px){.layout{grid-template-columns:1fr!important}.log{position:static!important;height:380px!important;max-width:none}.cg-glass-layers{grid-template-columns:repeat(5,1fr)}}
+@media(max-width:760px){header{align-items:stretch!important}.tabs{width:100%!important;margin-left:0!important}.tabs button{flex:1}.shell{padding:12px!important}.layout{display:block!important}.project{padding:14px!important;border-radius:16px}.processes{grid-template-columns:1fr!important}.bottom{grid-template-columns:1fr!important}.cg-glass-layers{grid-template-columns:1fr;gap:4px}.cg-glass-layer{height:7px}.cg-impact{font-size:13px;padding:12px}.log{height:340px!important;min-height:0!important}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.001ms!important}}
+</style>
+<style id="CODEGLASS_PHASE13_DESIGN_SYSTEM">
+/* Phase 13 design system: balance, hierarchy, contrast, alignment, whitespace,
+   feedback, user control, responsive behavior, and accessible state cues. */
+:root{
+  --cg13-space-1:4px;--cg13-space-2:8px;--cg13-space-3:12px;--cg13-space-4:16px;
+  --cg13-space-5:24px;--cg13-space-6:32px;--cg13-radius-sm:8px;--cg13-radius-md:14px;
+  --cg13-radius-lg:20px;--cg13-text:#f7fbff;--cg13-muted:#b9c9d8;--cg13-focus:#fff120;
+  --cg13-info:#75b8e8;--cg13-active:#2040a0;--cg13-success:#38d39f;--cg13-warning:#fff120;
+  --cg13-danger:#d7193f;--cg13-glass:rgba(255,255,255,.075);--cg13-border:rgba(117,184,232,.68);
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{max-width:100%;overflow-x:hidden}
+body{color:var(--cg13-text);line-height:1.5}
+button,input,textarea,select{font:inherit}
+button{min-width:44px;min-height:44px;border-radius:var(--cg13-radius-sm);cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid var(--cg13-focus);outline-offset:3px}
+button[disabled]{cursor:not-allowed;opacity:.55}
+.project,.cg-voice-panel,.cg-audio-panel,.glass-card,.card,.panel{
+  border:1px solid var(--cg13-border);border-radius:var(--cg13-radius-md);
+  background:linear-gradient(135deg,rgba(255,255,255,.13),rgba(32,64,160,.18) 42%,rgba(0,0,0,.52));
+  backdrop-filter:blur(22px) saturate(135%);-webkit-backdrop-filter:blur(22px) saturate(135%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.2),inset 0 0 48px rgba(117,184,232,.08),0 18px 45px rgba(0,0,0,.32);
+}
+.project{padding:var(--cg13-space-5);position:relative;isolation:isolate}
+.project::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;background:linear-gradient(115deg,rgba(255,255,255,.16),transparent 18% 70%,rgba(117,184,232,.08))}
+.project.failed{border:3px solid var(--cg13-danger)!important;background:linear-gradient(135deg,rgba(215,25,63,.28),rgba(0,0,0,.62))!important;box-shadow:0 0 0 2px rgba(255,140,160,.35),0 0 42px rgba(215,25,63,.6),inset 0 0 120px rgba(215,25,63,.18)!important}
+.project.warning{border-color:var(--cg13-warning)!important;box-shadow:0 0 30px rgba(255,241,32,.28),inset 0 0 80px rgba(255,241,32,.08)!important}
+.cg13-priority{display:grid;grid-template-columns:minmax(0,2fr) minmax(220px,1fr);gap:var(--cg13-space-5);align-items:start}
+.cg13-primary-action{border:2px solid var(--cg13-focus);box-shadow:0 0 18px rgba(255,241,32,.22)}
+.cg13-status-symbol{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;font-weight:900;background:var(--cg13-danger);color:#fff}
+.cg13-noncolor-status{display:flex;gap:var(--cg13-space-2);align-items:center;font-weight:700}
+.cg13-skip-link{position:absolute;left:-9999px;top:8px;z-index:9999;padding:10px;background:#000;color:var(--cg13-focus)}
+.cg13-skip-link:focus{left:8px}
+[aria-live]{min-height:1.5em}
+@media(max-width:1100px){.cg13-priority{grid-template-columns:1fr}.layout{grid-template-columns:1fr!important}}
+@media(max-width:760px){.shell{padding:var(--cg13-space-3)!important}.project{padding:var(--cg13-space-4)}.cg13-priority{display:block}.cg13-priority>*{margin-bottom:var(--cg13-space-4)}.actions,.cg-voice-actions,.cg-audio-panel{display:flex;flex-wrap:wrap;gap:var(--cg13-space-2)}button,.cg-file-label{width:100%;min-height:48px}.processes{grid-template-columns:1fr!important}}
+@media(prefers-contrast:more){.project,.cg-voice-panel,.cg-audio-panel{border-width:2px;background:#000}.muted{color:#fff}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+<script id="CODEGLASS_PHASE13_ACCESSIBILITY">
+(function(){
+  function install(){
+    if(document.querySelector('.cg13-skip-link'))return;
+    var main=document.querySelector('main')||document.body;
+    if(!main.id)main.id='main-content';
+    var skip=document.createElement('a');skip.className='cg13-skip-link';skip.href='#main-content';skip.textContent='Skip to main content';document.body.prepend(skip);
+    document.querySelectorAll('button').forEach(function(button){if(!button.getAttribute('aria-label')&&!button.textContent.trim())button.setAttribute('aria-label','Action');});
+    document.querySelectorAll('.project').forEach(function(card){card.setAttribute('role','region');if(!card.getAttribute('aria-label'))card.setAttribute('aria-label','Project observatory');});
+  }
+  document.addEventListener('DOMContentLoaded',install);setInterval(install,1200);
+})();
+</script>
+</head><body><header><h1> Code Glass</h1><div class="tabs"><button class="secondary" onclick="show('dashboard')">Dashboard</button><button class="secondary" onclick="show('settings')">Settings</button><button onclick="startNew()">+ New project</button></div></header><main class="shell"><div class="layout"><div><section id="dashboard"><div class="toolbar"><div><h2>Build Away From Your Machine</h2><div class="muted">Three transparent processes reveal what the code is doing.</div></div><div class="legend"><span><i class="sw" style="background:var(--ok)"></i>Passed</span><span><i class="sw" style="background:var(--gold)"></i>Active</span><span><i class="sw" style="background:var(--bad)"></i>Failed</span><button class="secondary" id="soundBtn" onclick="toggleSound()">Sound off</button></div></div><div id="projects" class="projects"></div></section><section id="settings" class="hidden"><div class="sub form"><h2>Remote build settings</h2><p class="muted">Credentials are never placed in the renderer. This panel stores preferences only; delivery requires a secure server adapter.</p><div class="remote"><label>Notification email<input id="notifyEmail" placeholder="you@example.com"></label><label>WhatsApp number<input id="notifyWhatsApp" placeholder="+256700000000"></label><label><input type="checkbox" id="notifyProgress"> Send progress updates</label><label><input type="checkbox" id="notifyErrors" checked> Send failure alerts</label><label>Reply safety mode<select id="replyMode"><option value="safe">Safe commands only</option><option value="review">Require review for every action</option></select></label><div class="actions"><button onclick="saveRemotePrefs()">Save preferences</button><button class="secondary" onclick="testSound()">Test engine</button></div><p id="remoteNote" class="muted"></p></div></div></section><section id="onboarding" class="hidden"><div class="sub form"><h2>New three-process project</h2><p class="muted">Choose an existing project folder. Code Glass will create or update project.codeglass.json inside it.</p><label>Display name<input id="display" placeholder="My project" autocomplete="off"></label><div class="actions"><button class="secondary" type="button" onclick="chooseProjectFolder()">Choose project folder</button><button type="button" onclick="createProject()">Create project</button></div><p id="folderNote" class="muted" aria-live="polite">No folder selected.</p><p id="onboardingNote" class="muted" aria-live="polite"></p></div></section></div><aside><div class="log"><div class="log-head"><div><h2>Activity log</h2><div class="muted">Remote-ready evidence stream</div></div><button class="secondary" onclick="clearLog()">Clear</button></div><div class="filters" style="margin:10px 0"><select id="filter" onchange="renderLog()"><option value="all">All events</option><option value="error">Errors</option><option value="warning">Warnings</option><option value="pass">Success</option><option value="info">Motion</option></select></div><div id="events" class="events"></div></div></aside></div></main>
 <script>
 let config,projects=[],soundOn=localStorage.getItem('cg-sound')==='1',lastSig='',audioCtx=null,engine=null,seen={};const $=x=>document.getElementById(x);const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function aud(){if(!soundOn)return null;const C=window.AudioContext||window.webkitAudioContext;if(!C)return null;audioCtx=audioCtx||new C;return audioCtx}
@@ -20,8 +104,62 @@ function processCard(p,m,i){const s=pstate(p,m),pct=Math.max(0,Math.min(100,Numb
 function render(){projects.forEach(x=>normalize(x.data));$('projects').innerHTML=projects.map(({data:m})=>{const h=health(m),p=pressure(m),bad=(m.status_dots||[]).find(x=>!x.resolved&&x.type==='error'),stars=['Tests','Security','Review','Runtime','Release'].map((x,i)=>`<i class="star" title="${x}" style="opacity:${Math.max(.2,overall(m)/100-i*.08)}"></i>`).join('');return `<article class="project ${h==='failed'?'failed':h==='warning'?'warning':''}"><div class="head"><div><h2>${esc(m.display_name)}</h2><div class="muted">${overall(m)}% complete  <span class="health ${h==='failed'?'bad':h==='warning'?'warn':''}">${h==='failed'?'PROJECT BLOCKED':h==='warning'?'NEEDS ATTENTION':'CLEAR'}</span></div></div><div class="mode">${m.interaction_mode==='mcp'?'':''} <span class="tag">${m.workflow_mode==='auto'?'AUTO':'MANUAL'}</span></div></div><div class="processes">${m.processes.map((p,i)=>processCard(p,m,i)).join('')}</div>${bad?`<div class="project-impact"><b>PROJECT AFFECTED BY FAILURE</b><br>${esc(bad.message||'An unresolved error is propagating through the project.')}<br><span class="muted">Cause: ${esc(bad.process_id||bad.stage_id||'unknown')}  Inspect the first failed process.</span></div>`:m.pending_confirmation?'<div class="project-impact warning"><b>HUMAN DECISION REQUIRED</b><br>A safe proposal is ready; automation will not confirm it.</div>':''}<div class="bottom"><div class="sub"><h3>System pressure ${p}%</h3><div class="bar"><i style="width:${p}%"></i></div><div class="mini">${(m.status_dots||[]).filter(x=>!x.resolved).length} open signals  ${(m.gate_log||[]).length} gate checks</div></div><div class="sub"><h3>Readiness constellation</h3><div class="stars">${stars}</div></div><div class="sub"><h3>Next action</h3><div class="mini">${h==='failed'?'Repair the first failed process':h==='warning'?'Review the active warning':overall(m)===100?'Observe runtime health':'Continue '+esc(m.processes[m.current_process_index||0]?.name||'Discover')}</div></div></div></article>`}).join('')||'<div class="sub"><h3>No projects yet</h3><p class="muted">Create a project to begin.</p></div>'}
 function eventData(){const a=[];for(const {data:m} of projects){for(const g of(m.gate_log||[]))a.push({time:g.created_at||g.timestamp||m.updated_at,type:g.result==='pass'?'pass':g.result==='fail'?'error':'info',title:`${m.display_name}  Gate ${g.result||'recorded'}`,detail:g.detail||'Gate event'});for(const d of(m.status_dots||[]).filter(x=>!x.resolved))a.push({time:d.created_at||m.updated_at,type:d.type||'info',title:`${m.display_name}  ${d.type||'signal'}`,detail:(d.process_id?`Process ${d.process_id}: `:'')+(d.message||'Unresolved signal')});for(const p of(m.processes||[]).filter(x=>x.status==='in_progress'))a.push({time:m.updated_at,type:'info',title:`${m.display_name}  Good motion`,detail:`Code is moving through ${p.name}`})}return a.sort((a,b)=>new Date(b.time)-new Date(a.time))}
 function renderLog(){const f=$('filter').value,a=eventData().filter(x=>f==='all'||x.type===f);$('events').innerHTML=a.length?a.slice(0,100).map(e=>`<div class="event ${esc(e.type)}"><div class="event-top"><span class="event-title">${esc(e.title)}</span><span class="muted">${e.time?new Date(e.time).toLocaleTimeString():''}</span></div><div class="event-detail">${esc(e.detail)}</div></div>`).join(''):'<div class="muted" style="padding:15px 2px">No matching activity.</div>'}
-async function read(p){const r=await codeGlass.readFile(p);try{return r.ok?JSON.parse(r.data):null}catch{return null}}async function refresh(){window.projects=projects=(await Promise.all(config.project_registry.map(async x=>({entry:x,data:await read(x.manifest_path)})))).filter(x=>x.data);render();renderLog();const sig=projects.map(x=>x.data.project_id+':'+x.data.updated_at+':'+health(x.data)).join('|');const active=projects.some(x=>x.data.processes?.some(p=>p.status==='in_progress'));if(soundOn)active?updateEngine(.25+overall(projects[0]?.data||{})/400,projects.some(x=>health(x.data)==='failed')?.8:0):stopEngine();if(lastSig&&sig!==lastSig)cue(projects.some(x=>health(x.data)==='failed')?'error':'motion');lastSig=sig}
-function show(id){['dashboard','settings','onboarding'].forEach(x=>$(x).classList.toggle('hidden',x!==id));if(id==='settings'){const p=JSON.parse(localStorage.getItem('cg-remote')||'{}');$('notifyEmail').value=p.email||'';$('notifyWhatsApp').value=p.whatsapp||'';$('notifyProgress').checked=!!p.progress;$('notifyErrors').checked=p.errors!==false;$('replyMode').value=p.replyMode||'safe'}}function saveRemotePrefs(){localStorage.setItem('cg-remote',JSON.stringify({email:$('notifyEmail').value.trim(),whatsapp:$('notifyWhatsApp').value.trim(),progress:$('notifyProgress').checked,errors:$('notifyErrors').checked,replyMode:$('replyMode').value}));$('remoteNote').textContent='Preferences saved locally. Provider delivery requires a secure server adapter and credentials.';cue('success')};function clearLog(){$('events').innerHTML='<div class="muted" style="padding:15px 2px">View cleared. New events will appear on refresh.</div>'};function startNew(){show('onboarding')};async function createProject(){const name=$('display').value.trim()||'New project';if(config.project_registry.length>=5)return alert('The five-project cap has been reached.');const now=new Date().toISOString(),stages=['Discover','Build & Prove','Ship & Learn'],m={schema_version:'1.1',project_id:name.toLowerCase().replace(/[^a-z0-9]+/g,'-'),display_name:name,project_path:'',created_at:now,updated_at:now,interaction_mode:'cli',workflow_mode:'manual',processes:stages.map((n,i)=>({id:['discover','build-prove','ship-learn'][i],name:n,status:i?'not_started':'in_progress',progress:i?0:5,checkpoints:[]})),current_process_index:0,overall_completion_pct:2,gate_config:{layers_active:['build_tests'],confirmation_granularity:'stage_completion'},pending_confirmation:null,status_dots:[],gate_log:[],snapshots:[]};alert('Choose a project folder in the full onboarding flow before creating a production manifest.');}
+async function read(p){const r=await codeGlass.readFile(p);try{return r.ok?JSON.parse(r.data):null}catch{return null}}async function refresh(){window.projects=projects=(await Promise.all(config.project_registry.map(async x=>({entry:x,data:await read(x.manifest_path)})))).filter(x=>x.data);window.codeGlassProjects=projects;render();renderLog();const sig=projects.map(x=>x.data.project_id+':'+x.data.updated_at+':'+health(x.data)).join('|');const active=projects.some(x=>x.data.processes?.some(p=>p.status==='in_progress'));if(soundOn)active?updateEngine(.25+overall(projects[0]?.data||{})/400,projects.some(x=>health(x.data)==='failed')?.8:0):stopEngine();if(lastSig&&sig!==lastSig)cue(projects.some(x=>health(x.data)==='failed')?'error':'motion');lastSig=sig}
+function show(id){['dashboard','settings','onboarding'].forEach(x=>$(x).classList.toggle('hidden',x!==id));if(id==='settings'){const p=JSON.parse(localStorage.getItem('cg-remote')||'{}');$('notifyEmail').value=p.email||'';$('notifyWhatsApp').value=p.whatsapp||'';$('notifyProgress').checked=!!p.progress;$('notifyErrors').checked=p.errors!==false;$('replyMode').value=p.replyMode||'safe'}}function saveRemotePrefs(){localStorage.setItem('cg-remote',JSON.stringify({email:$('notifyEmail').value.trim(),whatsapp:$('notifyWhatsApp').value.trim(),progress:$('notifyProgress').checked,errors:$('notifyErrors').checked,replyMode:$('replyMode').value}));$('remoteNote').textContent='Preferences saved locally. Provider delivery requires a secure server adapter and credentials.';cue('success')};function clearLog(){$('events').innerHTML='<div class="muted" style="padding:15px 2px">View cleared. New events will appear on refresh.</div>'};function startNew(){show('onboarding')};let selectedProjectFolder = '';
+async function chooseProjectFolder(){
+  const folder = await codeGlass.pickFolder();
+  if(!folder){
+    if($('folderNote')) $('folderNote').textContent='Folder selection cancelled.';
+    return;
+  }
+  selectedProjectFolder = folder;
+  if($('folderNote')) $('folderNote').textContent = `Selected folder: ${folder}`;
+  if($('onboardingNote')) $('onboardingNote').textContent = 'Folder selected. Create the project when ready.';
+}
+function makeProjectId(name,folder){
+  const base=String(name||'project').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')||'project';
+  const tail=String(folder||'').split(/[\\/]/).filter(Boolean).pop().toLowerCase().replace(/[^a-z0-9]+/g,'-');
+  return (base+(tail&&tail!==base?'-'+tail:'')).replace(/-+/g,'-').slice(0,80);
+}
+async function createProject(){
+  const name=$('display').value.trim()||'New project';
+  if((config.project_registry||[]).length>=5)return alert('The five-project cap has been reached.');
+  if(!selectedProjectFolder){
+    $('onboardingNote').textContent='Choose a project folder before creating the project.';
+    cue('warning');
+    return;
+  }
+  const now=new Date().toISOString();
+  const manifestPath=selectedProjectFolder.replace(/[\\/]+$/,'')+'/project.codeglass.json';
+  const names=['Discover','Build & Prove','Ship & Learn'];
+  const ids=['discover','build-prove','ship-learn'];
+  const id=makeProjectId(name,selectedProjectFolder);
+  const stages=names.map((n,i)=>({id:ids[i],name:n,status:i?'not_started':'in_progress',progress:i?0:5,checkpoints:[]}));
+  const manifest={
+    schema_version:'1.1',project_id:id,display_name:name,project_path:selectedProjectFolder,
+    manifest_path:manifestPath,created_at:now,updated_at:now,interaction_mode:'cli',workflow_mode:'manual',
+    stages:stages,processes:stages.map(x=>({...x})),current_stage_index:0,current_process_index:0,
+    overall_completion_pct:2,gate_config:{layers_active:['build_tests'],confirmation_granularity:'stage_completion'},
+    pending_confirmation:null,status_dots:[],gate_log:[],snapshots:[]
+  };
+  const existing=await codeGlass.readFile(manifestPath);
+  if(existing&&existing.ok&&!confirm('A project.codeglass.json already exists here. Replace it?'))return;
+  const saved=await codeGlass.writeFile(manifestPath,JSON.stringify(manifest,null,2));
+  if(!saved||!saved.ok){
+    $('onboardingNote').textContent='Could not write manifest: '+(saved&&saved.error?saved.error:'unknown error');
+    cue('error');
+    return;
+  }
+  config.project_registry=[...(config.project_registry||[]).filter(x=>x.project_id!==id),{
+    project_id:id,display_name:name,manifest_path:manifestPath,project_path:selectedProjectFolder
+  }];
+  await codeGlass.saveConfig(config);
+  $('onboardingNote').textContent='Project created successfully. Returning to dashboard…';
+  cue('success');
+  await new Promise(r=>setTimeout(r,350));
+  show('dashboard');
+  await refresh();
+}
 async function boot(){config=await codeGlass.getConfig();$('soundBtn').textContent=soundOn?'Sound on':'Sound off';await refresh();setInterval(refresh,2000)}boot();
 </script><script id="codeglass-standard-ui-script">
 (function(){
@@ -44,6 +182,231 @@ document.addEventListener('DOMContentLoaded',function(){install();setInterval(in
   function install(){if(document.getElementById('cg-wired-export'))return;var host=document.querySelector('header .tabs')||document.querySelector('.tabs');if(host){var b=document.createElement('button');b.id='cg-wired-export';b.className='secondary';b.textContent='Export report';b.onclick=exportHtml;host.appendChild(b)} }
   window.codeGlassWired={exportJson:exportJson,exportHtml:exportHtml,version:'core-standard-v1'};
   document.addEventListener('DOMContentLoaded',install);setInterval(install,2000);
+})();
+</script>
+<script id="CODEGLASS_PHASE06_RENDERER_INTEGRATION">
+(function(){
+  function addLayerMarkup(card){
+    if(card.querySelector('.cg-glass-layers'))return;
+    var layers=document.createElement('div');
+    layers.className='cg-glass-layers';
+    layers.setAttribute('aria-label','Transparent glass state layers');
+    layers.innerHTML='<span class="cg-glass-layer rear" title="Rear evidence layer"></span><span class="cg-glass-layer liquid" title="Live process layer"></span><span class="cg-glass-layer front" title="Front status layer"></span><span class="cg-glass-layer edge" title="Boundary layer"></span><span class="cg-glass-layer fracture" title="Failure fracture layer"></span>';
+    card.appendChild(layers);
+  }
+  function addImpact(card){
+    if(!card.classList.contains('failed')||card.querySelector('.cg-impact'))return;
+    var impact=document.createElement('div');
+    impact.className='cg-impact';
+    impact.setAttribute('role','alert');
+    impact.setAttribute('aria-live','assertive');
+    var source=(window.codeGlassProjects||[]).map(function(x){return x.data||x}).find(function(x){return x&&card.textContent.indexOf(x.display_name)>=0});
+    var first=source&&((source.status_dots||[]).filter(function(x){return !x.resolved&&x.type==='error'})[0]);
+    impact.innerHTML='<span aria-hidden="true">!</span><span>PROJECT AFFECTED BY FAILURE<small>'+(first&&first.message?'Cause: '+String(first.message).replace(/[<>]/g,''):'Inspect the first failed process and its evidence.')+'</small></span>';
+    var anchor=card.querySelector('.head')||card.firstElementChild;
+    if(anchor)anchor.insertAdjacentElement('afterend',impact);else card.prepend(impact);
+  }
+  function enhance(){
+    document.querySelectorAll('#projects .project,.project').forEach(function(card){
+      card.setAttribute('role','region');
+      if(!card.getAttribute('aria-label'))card.setAttribute('aria-label','Code Glass project observatory');
+      addLayerMarkup(card);addImpact(card);
+    });
+  }
+  document.addEventListener('DOMContentLoaded',enhance);
+  setInterval(enhance,1000);
+})();
+</script>
+<script id="CODEGLASS_PHASE07_AUDIO_EXPORT">
+(function(){
+  'use strict';
+  var audio=null, master=null, engine=null, muted=false, lastState='idle', lastCue=0;
+
+  function audioContext(){
+    if(!audio)audio=new (window.AudioContext||window.webkitAudioContext)();
+    if(audio.state==='suspended')audio.resume();
+    return audio;
+  }
+  function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+  function makeEngine(){
+    var ctx=audioContext();
+    if(engine)return engine;
+    master=ctx.createGain(); master.gain.value=0.055; master.connect(ctx.destination);
+    var osc1=ctx.createOscillator(),osc2=ctx.createOscillator(),filter=ctx.createBiquadFilter(),gain=ctx.createGain();
+    osc1.type='sawtooth';osc2.type='triangle';osc1.frequency.value=72;osc2.frequency.value=144;
+    filter.type='lowpass';filter.frequency.value=900;filter.Q.value=1.2;gain.gain.value=0;
+    osc1.connect(filter);osc2.connect(filter);filter.connect(gain);gain.connect(master);osc1.start();osc2.start();
+    engine={osc1:osc1,osc2:osc2,filter:filter,gain:gain};
+    return engine;
+  }
+  function rpmFor(state){
+    return state==='failed'?58:state==='warning'?82:state==='success'?132:state==='building'?108:72;
+  }
+  function stateForProjects(){
+    var list=window.codeGlassProjects||[];
+    var failed=list.some(function(p){return p&&p.data&&((p.data.status_dots||[]).some(function(x){return !x.resolved&&x.type==='error'}));});
+    var warning=list.some(function(p){return p&&p.data&&((p.data.status_dots||[]).some(function(x){return !x.resolved&&x.type==='warning'}));});
+    if(failed)return 'failed';if(warning)return 'warning';return list.length?'building':'idle';
+  }
+  function setEngineState(state){
+    lastState=state;var e=makeEngine(),ctx=audioContext(),rpm=rpmFor(state),now=ctx.currentTime;
+    e.osc1.frequency.cancelScheduledValues(now);e.osc2.frequency.cancelScheduledValues(now);e.filter.frequency.cancelScheduledValues(now);
+    e.osc1.frequency.linearRampToValueAtTime(rpm,now+.25);e.osc2.frequency.linearRampToValueAtTime(rpm*2,now+.25);
+    e.filter.frequency.linearRampToValueAtTime(state==='failed'?360:state==='warning'?620:1100,now+.25);
+    e.gain.gain.setTargetAtTime(muted?0:state==='idle'?0.012:0.05,now,.18);
+    var label=document.querySelector('[data-cg-audio-state]');if(label)label.textContent='Engine audio: '+state+' · '+rpm+' RPM';
+  }
+  function cue(kind){
+    var now=Date.now();if(now-lastCue<180)return;lastCue=now;
+    var ctx=audioContext();if(muted)return;
+    var o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(master||ctx.destination);
+    var base=kind==='error'?110:kind==='warning'?220:kind==='success'?660:330;
+    o.type=kind==='error'?'square':'sine';o.frequency.setValueAtTime(base,ctx.currentTime);
+    o.frequency.exponentialRampToValueAtTime(kind==='error'?70:base*1.8,ctx.currentTime+.22);
+    g.gain.setValueAtTime(0,ctx.currentTime);g.gain.linearRampToValueAtTime(.11,ctx.currentTime+.02);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.28);
+    o.start();o.stop(ctx.currentTime+.3);
+  }
+  function updateAudio(){
+    var state=stateForProjects();if(state!==lastState){if(lastState!=='idle')cue(state==='failed'?'error':state==='warning'?'warning':'success');setEngineState(state);}else if(engine)setEngineState(state);
+  }
+  function toggleAudio(){
+    muted=!muted;if(!muted){setEngineState(stateForProjects());}else if(engine)engine.gain.gain.value=0;
+    var b=document.querySelector('[data-cg-audio-toggle]');if(b){b.textContent=muted?'Sound off':'Sound on';b.setAttribute('aria-pressed',String(!muted));}
+  }
+  function reportData(){
+    var projects=window.codeGlassProjects||[];
+    return {product:'Lame in Tech / Code Glass',generated_at:new Date().toISOString(),audio_state:lastState,projects:projects.map(function(x){return x.data||x;})};
+  }
+  function download(name,type,text){
+    var blob=new Blob([text],{type:type}),url=URL.createObjectURL(blob),a=document.createElement('a');
+    a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url);},1000);
+  }
+  function exportJSON(){download('code-glass-report.json','application/json',JSON.stringify(reportData(),null,2));}
+  function exportHTML(){
+    var data=reportData(),rows=(data.projects||[]).map(function(p){return '<article><h2>'+String(p.display_name||p.name||'Project').replace(/[<>]/g,'')+'</h2><pre>'+String(JSON.stringify(p,null,2)).replace(/[<>]/g,'')+'</pre></article>';}).join('');
+    download('code-glass-report.html','text/html','<!doctype html><meta charset="utf-8"><title>Code Glass Report</title><style>body{font-family:system-ui;background:#05070b;color:#f7fbff;padding:2rem}article{border:1px solid #75b8e8;padding:1rem;margin:1rem 0;border-radius:12px}pre{white-space:pre-wrap}</style><h1>Code Glass Report</h1><p>Generated '+data.generated_at+'</p>'+rows);
+  }
+  function controls(){
+    if(document.querySelector('[data-cg-audio-panel]'))return;
+    var panel=document.createElement('div');panel.dataset.cgAudioPanel='';panel.className='cg-audio-panel';panel.setAttribute('role','region');panel.setAttribute('aria-label','Audio and report controls');
+    panel.innerHTML='<span data-cg-audio-state aria-live="polite">Engine audio: idle · 72 RPM</span><button type="button" data-cg-audio-toggle aria-pressed="true">Sound on</button><button type="button" data-cg-json-export>Export JSON</button><button type="button" data-cg-html-export>Export HTML</button>';
+    var anchor=document.querySelector('header')||document.body;anchor.appendChild(panel);
+    panel.querySelector('[data-cg-audio-toggle]').addEventListener('click',toggleAudio);panel.querySelector('[data-cg-json-export]').addEventListener('click',exportJSON);panel.querySelector('[data-cg-html-export]').addEventListener('click',exportHTML);
+  }
+  var style=document.createElement('style');style.textContent='.cg-audio-panel{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0;padding:10px;border:1px solid #75b8e8aa;border-radius:12px;background:#ffffff10;backdrop-filter:blur(14px)}.cg-audio-panel span{flex:1;min-width:190px;color:#bceaff}.cg-audio-panel button{min-height:42px}';document.head.appendChild(style);
+  window.codeGlassAudio={start:function(){setEngineState(stateForProjects());},stop:function(){if(engine)engine.gain.gain.value=0;},setState:setEngineState,cue:cue,toggle:toggleAudio,exportJSON:exportJSON,exportHTML:exportHTML};
+  document.addEventListener('DOMContentLoaded',function(){controls();setInterval(updateAudio,1000);});
+})();
+</script>
+<script id="CODEGLASS_PHASE08_VOICE_INTAKE">
+(function(){
+  'use strict';
+  var currentIdea=null, recognition=null, listening=false;
+  function announce(text){var node=document.querySelector('[data-cg-voice-status]');if(node)node.textContent=text;}
+  function normalize(text){
+    text=String(text||'').replace(/\s+/g,' ').trim();
+    var title=(text.split(/[.!?]/)[0]||'Untitled idea').slice(0,120);
+    var low=text.toLowerCase(),questions=[];
+    if(text.length<20)questions.push('What problem should this idea solve?');
+    if(!/(who|people|user|disabled|blind|deaf|mobility|community)/.test(low))questions.push('Who should benefit from this idea?');
+    if(!/(build|create|make|help|allow|enable|send|track|connect)/.test(low))questions.push('What should the system do first?');
+    currentIdea={intake_id:'idea-'+Date.now(),title:title,transcript:text,source_channels:['desktop'],accessibility_priority:/disabled|blind|deaf|mobility|unable|needy|assist/.test(low),clarification_questions:questions,status:questions.length?'needs_clarification':'ready_for_discover',created_at:new Date().toISOString()};
+    renderIdea();return currentIdea;
+  }
+  function renderIdea(){
+    var out=document.querySelector('[data-cg-idea-output]');if(!out||!currentIdea)return;
+    out.innerHTML='<strong>'+currentIdea.status.replace(/_/g,' ')+'</strong><p>'+String(currentIdea.title).replace(/[<>]/g,'')+'</p><p>'+String(currentIdea.transcript).replace(/[<>]/g,'')+'</p>'+(currentIdea.clarification_questions.length?'<ol>'+currentIdea.clarification_questions.map(function(q){return '<li>'+q.replace(/[<>]/g,'')+'</li>';}).join('')+'</ol>':'<p>Ready for Discover.</p>');
+    out.setAttribute('aria-live','polite');
+  }
+  function startListening(){
+    var Speech=window.SpeechRecognition||window.webkitSpeechRecognition;
+    if(!Speech){announce('Speech recognition is unavailable. Use the audio file or text box.');return;}
+    recognition=new Speech();recognition.lang='en-US';recognition.continuous=false;recognition.interimResults=false;
+    recognition.onstart=function(){listening=true;announce('Listening. Speak your idea now.');};
+    recognition.onresult=function(e){normalize(Array.from(e.results).map(function(r){return r[0].transcript;}).join(' '));announce('Idea captured. Review the clarification questions.');};
+    recognition.onerror=function(){listening=false;announce('Voice capture failed. You can retry or use an audio file.');};
+    recognition.onend=function(){listening=false;};recognition.start();
+  }
+  function stopListening(){if(recognition&&listening)recognition.stop();announce('Voice capture stopped.');}
+  function readAudio(file){
+    if(!file||!String(file.type).startsWith('audio/')){announce('Please choose an audio file.');return;}
+    announce('Audio received: '+file.name+'. Transcription-ready intake created. Add or paste the transcript to continue.');
+    var reader=new FileReader();reader.onload=function(){var box=document.querySelector('[data-cg-voice-text]');if(box)box.focus();};reader.readAsArrayBuffer(file);
+  }
+  function buildPanel(){
+    if(document.querySelector('[data-cg-voice-panel]'))return;
+    var panel=document.createElement('section');panel.dataset.cgVoicePanel='';panel.className='cg-voice-panel';panel.setAttribute('role','region');panel.setAttribute('aria-label','Speak your idea to life');
+    panel.innerHTML='<h2>Speak your idea to life</h2><p class="muted">Use your voice, upload a WhatsApp/Gmail audio note, or type a transcript.</p><div class="cg-voice-actions"><button type="button" data-cg-speak>Start voice capture</button><button type="button" data-cg-stop>Stop</button><label class="cg-file-label">Attach audio<input type="file" accept="audio/*" data-cg-audio-file></label></div><textarea data-cg-voice-text rows="4" placeholder="Paste or type the transcript here" aria-label="Idea transcript"></textarea><button type="button" data-cg-normalize>Understand this idea</button><div data-cg-voice-status aria-live="polite">Ready for your idea.</div><div data-cg-idea-output class="cg-idea-output" aria-live="polite"></div>';
+    (document.querySelector('main')||document.body).prepend(panel);
+    panel.querySelector('[data-cg-speak]').addEventListener('click',startListening);panel.querySelector('[data-cg-stop]').addEventListener('click',stopListening);panel.querySelector('[data-cg-audio-file]').addEventListener('change',function(e){readAudio(e.target.files[0]);});panel.querySelector('[data-cg-normalize]').addEventListener('click',function(){normalize(panel.querySelector('[data-cg-voice-text]').value);announce('Transcript understood.');});
+  }
+  var style=document.createElement('style');style.textContent='.cg-voice-panel{margin:16px 0;padding:18px;border:2px solid #75b8e8aa;border-radius:16px;background:linear-gradient(135deg,#2040a044,#ffffff10);backdrop-filter:blur(18px)}.cg-voice-panel h2{color:#fff120;margin-top:0}.cg-voice-actions{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}.cg-voice-panel textarea{width:100%;box-sizing:border-box;resize:vertical;padding:12px;background:#0008;color:#f7fbff;border:1px solid #75b8e8;border-radius:10px}.cg-file-label{display:inline-flex;align-items:center;min-height:42px;padding:0 12px;background:#2040a0;color:#fff;border-radius:8px;cursor:pointer}.cg-file-label input{display:none}.cg-voice-status,.cg-idea-output{margin-top:12px;padding:10px;border-radius:8px;background:#0006}.cg-idea-output strong{color:#fff120;text-transform:uppercase}';document.head.appendChild(style);
+  window.codeGlassVoiceIntake={normalize:normalize,start:startListening,stop:stopListening,readAudio:readAudio,getIdea:function(){return currentIdea;}};
+  document.addEventListener('DOMContentLoaded',buildPanel);
+})();
+</script>
+<!-- CODEGLASS_PHASE15_GUIDANCE_SIGNALS -->
+<!-- CODEGLASS_PHASE15_SHARED_GUIDANCE_CONTRACT -->
+<script id="CODEGLASS_PHASE15_SHARED_GUIDANCE_CONTRACT">
+(function(){
+  'use strict';
+  window.codeGlassGuidanceContract = Object.freeze({
+    version: '1.0',
+    states: Object.freeze(['go','wait','stop','ready','listening']),
+    requiredFields: Object.freeze([
+      'project_signal','signal_label','signal_color','signal_shape','icon',
+      'message','recommended_action','audio_cue','haptic_cue',
+      'accessible_description','color_independent'
+    ]),
+    normalize: function(signal){
+      var s=signal||{};
+      var allowed=this.states.indexOf(s.project_signal)>=0?s.project_signal:'ready';
+      return Object.freeze({
+        guidance_mode:s.guidance_mode==='observatory'?'observatory':'guided',
+        project_signal:allowed,
+        signal_label:String(s.signal_label||'READY — Start an idea'),
+        signal_color:String(s.signal_color||'gray'),
+        signal_shape:String(s.signal_shape||'circle'),
+        icon:String(s.icon||'○'),
+        affected_process_id:s.affected_process_id||null,
+        affected_process_name:s.affected_process_name||null,
+        message:String(s.message||'Ready. Speak or choose an idea.'),
+        recommended_action:String(s.recommended_action||'start_idea'),
+        audio_cue:String(s.audio_cue||'idle'),
+        haptic_cue:String(s.haptic_cue||'none'),
+        requires_confirmation:Boolean(s.requires_confirmation),
+        accessible_description:String(s.accessible_description||s.message||'Ready. Speak or choose an idea.'),
+        color_independent:s.color_independent!==false
+      });
+    }
+  });
+})();
+</script>
+<style id="CODEGLASS_PHASE16_GUIDED_OBSERVATORY">
+.cg-guidance-shell{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,320px);gap:16px;margin:16px 0;padding:18px;border:2px solid #75b8e8aa;border-radius:20px;background:linear-gradient(135deg,#2040a044,#ffffff0d);backdrop-filter:blur(18px)}
+.cg-guidance-signal{display:flex;gap:16px;align-items:center;padding:18px;border-radius:16px;background:#0008;border:2px solid #75b8e8}
+.cg-guidance-lamp{width:72px;height:72px;flex:0 0 72px;display:grid;place-items:center;border-radius:50%;font-size:38px;font-weight:900;color:#000;background:#9299a3}
+.cg-guidance-lamp.go{background:#38d39f}.cg-guidance-lamp.wait{background:#fff120}.cg-guidance-lamp.stop{border-radius:14px;background:#d7193f;color:#fff}.cg-guidance-lamp.listening{background:#4d9cff;color:#fff}
+.cg-guidance-label{font-size:clamp(1.1rem,2vw,1.7rem);font-weight:900}.cg-guidance-message{color:#dbe8f3;margin-top:4px}.cg-guidance-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.cg-guidance-mode{display:flex;flex-direction:column;gap:8px}.cg-guidance-mode button[aria-pressed="true"]{border:2px solid #fff120;box-shadow:0 0 16px #fff12055}.cg-guidance-processes{display:grid;gap:8px;margin-top:12px}.cg-guidance-process{display:flex;gap:8px;align-items:center;padding:9px;border:1px solid #75b8e866;border-radius:9px}.cg-guidance-process .dot{width:18px;height:18px;border-radius:50%;background:#777}.cg-guidance-process.complete .dot{background:#38d39f}.cg-guidance-process.in_progress .dot{background:#fff120}.cg-guidance-process.failed .dot{background:#d7193f}
+.guidance-guided .observatory-only{display:none!important}.guidance-observatory .guided-only{display:none!important}
+@media(max-width:760px){.cg-guidance-shell{grid-template-columns:1fr;padding:12px}.cg-guidance-signal{align-items:flex-start}.cg-guidance-lamp{width:58px;height:58px;flex-basis:58px;font-size:29px}.cg-guidance-mode button{width:100%}}
+</style>
+<script id="CODEGLASS_PHASE16_GUIDED_OBSERVATORY">
+(function(){
+  'use strict';
+  var mode=localStorage.getItem('codeglass-guidance-mode')==='observatory'?'observatory':'guided',voiceListening=false;
+  function esc(value){return String(value||'').replace(/[&<>"']/g,function(x){return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[x];});}
+  function projectData(){var list=window.codeGlassProjects||[];return list[0]&&list[0].data?list[0].data:null;}
+  function signal(data){var dots=(data&&data.status_dots||[]).filter(function(x){return !x.resolved});if(voiceListening)return {key:'listening',label:'LISTENING — Speak now',icon:'●',message:'Speak your idea now.'};var e=dots.find(function(x){return x.type==='error'});if(e)return {key:'stop',label:'STOP — Action required',icon:'!',message:e.message||'A blocking failure needs attention.'};var w=dots.find(function(x){return x.type==='warning'});if(data&&data.pending_confirmation||w)return {key:'wait',label:'WAIT — Input or confirmation needed',icon:'Ⅱ',message:'The system needs your input or confirmation.'};var active=data&&(data.stages||[]).find(function(x){return x.status==='in_progress'});if(active)return {key:'go',label:'GO — Continue',icon:'✓',message:active.name+' is progressing safely.'};return {key:'ready',label:'READY — Start an idea',icon:'○',message:'Speak or choose an idea.'};}
+  function announcement(s){return s.label+'. '+s.message;}
+  function render(){var host=document.querySelector('[data-cg-guidance-host]');if(!host)return;var data=projectData(),s=signal(data);document.body.classList.remove('guidance-guided','guidance-observatory');document.body.classList.add('guidance-'+mode);host.innerHTML='<div class="cg-guidance-shell"><div><div class="cg-guidance-signal" role="status" aria-live="'+(s.key==='stop'?'assertive':'polite')+'"><div class="cg-guidance-lamp '+s.key+'" aria-hidden="true">'+s.icon+'</div><div><div class="cg-guidance-label">'+s.label+'</div><div class="cg-guidance-message">'+esc(s.message)+'</div><div class="cg-guidance-actions guided-only"><button type="button" data-cg-guidance-action>Tell me what to do</button><button type="button" data-cg-guidance-speak>Speak an idea</button></div></div></div><div class="cg-guidance-processes observatory-only">'+((data&&data.stages)||[]).map(function(p){return '<div class="cg-guidance-process '+p.status+'"><span class="dot" aria-hidden="true"></span><span><strong>'+esc(p.name)+'</strong> — '+esc(p.status.replace(/_/g,' '))+'</span></div>';}).join('')+'</div></div><div class="cg-guidance-mode"><strong>Guidance mode</strong><button type="button" data-cg-mode="guided" aria-pressed="'+(mode==='guided')+'">Guided signals</button><button type="button" data-cg-mode="observatory" aria-pressed="'+(mode==='observatory')+'">Full observatory</button><div class="muted" data-cg-guidance-announcement aria-live="polite">'+esc(announcement(s))+'</div></div></div>';
+    host.querySelectorAll('[data-cg-mode]').forEach(function(b){b.addEventListener('click',function(){mode=b.dataset.cgMode;localStorage.setItem('codeglass-guidance-mode',mode);render();});});
+    var speak=host.querySelector('[data-cg-guidance-speak]');if(speak)speak.addEventListener('click',function(){voiceListening=true;render();if(window.codeGlassVoiceIntake&&window.codeGlassVoiceIntake.start)window.codeGlassVoiceIntake.start();});
+    var tell=host.querySelector('[data-cg-guidance-action]');if(tell)tell.addEventListener('click',function(){var a=host.querySelector('[data-cg-guidance-announcement]');if(a)a.textContent=announcement(s);});
+  }
+  function install(){var host=document.querySelector('[data-cg-guidance-host]');if(!host){host=document.createElement('section');host.dataset.cgGuidanceHost='';host.setAttribute('aria-label','Accessible traffic-light guidance');var main=document.querySelector('main')||document.body;main.prepend(host);}render();}
+  window.codeGlassGuidance={setMode:function(value){mode=value==='observatory'?'observatory':'guided';localStorage.setItem('codeglass-guidance-mode',mode);render();},getMode:function(){return mode;},setListening:function(value){voiceListening=Boolean(value);render();},render:render};
+  document.addEventListener('DOMContentLoaded',install);setInterval(render,1200);
 })();
 </script>
 </body></html>
